@@ -1,0 +1,27 @@
+name: CI/CD Pipeline Demo
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Automated Tests (CI)
+        run: node test.js
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Deployment (CD)
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
